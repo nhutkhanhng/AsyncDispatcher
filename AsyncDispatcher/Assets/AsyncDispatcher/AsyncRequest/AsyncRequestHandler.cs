@@ -16,7 +16,8 @@ namespace MessagePipe
         readonly IAsyncRequestHandlerCore<TRequest, TResponse> handler;
 
         [Preserve]
-        public AsyncRequestHandler(IAsyncRequestHandlerCore<TRequest, TResponse> handler, FilterAttachedAsyncRequestHandlerFactory handlerFactory)
+        public AsyncRequestHandler(IAsyncRequestHandlerCore<TRequest, TResponse> handler, 
+            FilterAttachedAsyncRequestHandlerFactory handlerFactory)
         {
             this.handler = handlerFactory.CreateAsyncRequestHandler<TRequest, TResponse>(handler);
         }

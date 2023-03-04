@@ -230,46 +230,4 @@ namespace MessagePipe
             return core.Subscribe(handler);
         }
     }
-
-    // Singleton, Scoped variation
-
-    [Preserve]
-    public class SingletonAsyncMessageBroker<TMessage> : AsyncMessageBroker<TMessage>, ISingletonAsyncPublisher<TMessage>, ISingletonAsyncSubscriber<TMessage>
-    {
-        [Preserve]
-        public SingletonAsyncMessageBroker(SingletonAsyncMessageBrokerCore<TMessage> core, FilterAttachedAsyncMessageHandlerFactory handlerFactory)
-            : base(core, handlerFactory)
-        {
-        }
-    }
-
-    [Preserve]
-    public class ScopedAsyncMessageBroker<TMessage> : AsyncMessageBroker<TMessage>, IScopedAsyncPublisher<TMessage>, IScopedAsyncSubscriber<TMessage>
-    {
-        [Preserve]
-        public ScopedAsyncMessageBroker(ScopedAsyncMessageBrokerCore<TMessage> core, FilterAttachedAsyncMessageHandlerFactory handlerFactory)
-            : base(core, handlerFactory)
-        {
-        }
-    }
-
-    [Preserve]
-    public class SingletonAsyncMessageBrokerCore<TMessage> : AsyncMessageBrokerCore<TMessage>
-    {
-        [Preserve]
-        public SingletonAsyncMessageBrokerCore(MessagePipeDiagnosticsInfo diagnostics, MessagePipeOptions options)
-            : base(diagnostics, options)
-        {
-        }
-    }
-
-    [Preserve]
-    public class ScopedAsyncMessageBrokerCore<TMessage> : AsyncMessageBrokerCore<TMessage>
-    {
-        [Preserve]
-        public ScopedAsyncMessageBrokerCore(MessagePipeDiagnosticsInfo diagnostics, MessagePipeOptions options)
-            : base(diagnostics, options)
-        {
-        }
-    }
 }

@@ -46,17 +46,19 @@ namespace MessagePipe
         
     {
         readonly Dictionary<TKey, HandlerHolder> handlerGroup;
-        readonly MessagePipeDiagnosticsInfo diagnotics;
+        // readonly MessagePipeDiagnosticsInfo diagnotics;
         readonly AsyncPublishStrategy defaultAsyncPublishStrategy;
         readonly HandlingSubscribeDisposedPolicy handlingSubscribeDisposedPolicy;
         readonly object gate;
         bool isDisposed;
 
         [Preserve]
-        public AsyncMessageBrokerCore(MessagePipeDiagnosticsInfo diagnotics, MessagePipeOptions options)
+        public AsyncMessageBrokerCore(
+            // MessagePipeDiagnosticsInfo diagnotics, 
+            MessagePipeOptions options)
         {
             this.handlerGroup = new Dictionary<TKey, HandlerHolder>();
-            this.diagnotics = diagnotics;
+            // this.diagnotics = diagnotics;
             this.defaultAsyncPublishStrategy = options.DefaultAsyncPublishStrategy;
             this.handlingSubscribeDisposedPolicy = options.HandlingSubscribeDisposedPolicy;
             this.gate = new object();
@@ -161,7 +163,7 @@ namespace MessagePipe
             {
                 var subscriptionKey = handlers.Add(handler);
                 var subscription = new Subscription(key, subscriptionKey, this);
-                core.diagnotics.IncrementSubscribe(this, subscription);
+                // core.diagnotics.IncrementSubscribe(this, subscription);
                 return subscription;
             }
 
@@ -171,7 +173,7 @@ namespace MessagePipe
                 {
                     if (handlers.TryDispose(out var count))
                     {
-                        core.diagnotics.RemoveTargetDiagnostics(this, count);
+                        // core.diagnotics.RemoveTargetDiagnostics(this, count);
                     }
                 }
             }
@@ -200,7 +202,7 @@ namespace MessagePipe
                             if (!holder.core.isDisposed)
                             {
                                 holder.handlers.Remove(subscriptionKey, false);
-                                holder.core.diagnotics.DecrementSubscribe(holder, this);
+                                // holder.core.diagnotics.DecrementSubscribe(holder, this);
                                 if (holder.handlers.GetCount() == 0)
                                 {
                                     holder.core.handlerGroup.Remove(key);

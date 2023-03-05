@@ -13,7 +13,9 @@ namespace MessagePipe
         readonly FilterAttachedAsyncMessageHandlerFactory handlerFactory;
 
         [Preserve]
-        public AsyncMessageBroker(AsyncMessageBrokerCore<TMessage> core, FilterAttachedAsyncMessageHandlerFactory handlerFactory)
+        public AsyncMessageBroker(AsyncMessageBrokerCore<TMessage> core
+            , FilterAttachedAsyncMessageHandlerFactory handlerFactory
+            )
         {
             this.core = core;
             this.handlerFactory = handlerFactory;
@@ -147,7 +149,39 @@ namespace MessagePipe
             }
         }
     }
+    public interface IDisposableAsyncPublisher<TMessage> : IAsyncPublisher<TMessage>, IDisposable
+    {
+    }
 
+    internal sealed class DisposableAsyncPublisher<TMessage> : IDisposableAsyncPublisher<TMessage>
+    {
+        readonly AsyncMessageBrokerCore<TMessage> core;
+
+        public DisposableAsyncPublisher(AsyncMessageBrokerCore<TMessage> core)
+        {
+            this.core = core;
+        }
+
+        public void Publish(TMessage message, CancellationToken cancellationToken)
+        {
+            core.Publish(message, cancellationToken);
+        }
+
+        public UniTask PublishAsync(TMessage message, CancellationToken cancellationToken)
+        {
+            return core.PublishAsync(message, cancellationToken);
+        }
+
+        public UniTask PublishAsync(TMessage message, AsyncPublishStrategy publishStrategy, CancellationToken cancellationToken)
+        {
+            return core.PublishAsync(message, publishStrategy, cancellationToken);
+        }
+
+        public void Dispose()
+        {
+            core.Dispose();
+        }
+    }
     [Preserve]
     public sealed class BufferedAsyncMessageBroker<TMessage> : IBufferedAsyncPublisher<TMessage>, IBufferedAsyncSubscriber<TMessage>
     {

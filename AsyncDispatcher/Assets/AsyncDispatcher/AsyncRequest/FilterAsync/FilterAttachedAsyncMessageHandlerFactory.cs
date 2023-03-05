@@ -14,27 +14,31 @@ namespace MessagePipe
     public sealed class FilterAttachedAsyncMessageHandlerFactory
     {
         readonly MessagePipeOptions options;
-        readonly AttributeFilterProvider<AsyncMessageHandlerFilterAttribute> filterProvider;
-        readonly IServiceProvider provider;
+        // readonly AttributeFilterProvider<AsyncMessageHandlerFilterAttribute> filterProvider;
+        // readonly IServiceProvider provider;
 
         [Preserve]
-        public FilterAttachedAsyncMessageHandlerFactory(MessagePipeOptions options, 
-            AttributeFilterProvider<AsyncMessageHandlerFilterAttribute> filterProvider, 
-            IServiceProvider provider)
+        public FilterAttachedAsyncMessageHandlerFactory(MessagePipeOptions options 
+            // ,AttributeFilterProvider<AsyncMessageHandlerFilterAttribute> filterProvider
+            // ,IServiceProvider provider
+            )
         {
             this.options = options;
-            this.filterProvider = filterProvider;
-            this.provider = provider;
+            // this.filterProvider = filterProvider;
+            // this.provider = provider;
         }
 
         public IAsyncMessageHandler<TMessage> CreateAsyncMessageHandler<TMessage>(IAsyncMessageHandler<TMessage> handler, AsyncMessageHandlerFilter<TMessage>[] filters)
         {
-            var (globalLength, globalFilters) = options.GetGlobalAsyncMessageHandlerFilters(provider, typeof(TMessage));
-            var (handlerLength, handlerFilters) = filterProvider.GetAttributeFilters(handler.GetType(), provider);
+            //var (globalLength, globalFilters) = options.GetGlobalAsyncMessageHandlerFilters(provider, typeof(TMessage));
+            //var (handlerLength, handlerFilters) = filterProvider.GetAttributeFilters(handler.GetType(), provider);
 
-            if (filters.Length != 0 || globalLength != 0 || handlerLength != 0)
+            //if (filters.Length != 0 || globalLength != 0 || handlerLength != 0)
             {
-                handler = new FilterAttachedAsyncMessageHandler<TMessage>(handler, globalFilters.Concat(handlerFilters).Concat(filters).Cast<AsyncMessageHandlerFilter<TMessage>>());
+                handler = new FilterAttachedAsyncMessageHandler<TMessage>(handler, 
+                    // globalFilters.Concat(handlerFilters).Concat(filters).Cast<AsyncMessageHandlerFilter<TMessage>>()
+                    null
+                    );
             }
 
             return handler;
@@ -48,9 +52,12 @@ namespace MessagePipe
         public FilterAttachedAsyncMessageHandler(IAsyncMessageHandler<T> body, IEnumerable<AsyncMessageHandlerFilter<T>> filters)
         {
             Func<T, CancellationToken, UniTask> next = body.HandleAsync;
-            foreach (var f in filters.OrderByDescending(x => x.Order))
+            if (filters != null)
             {
-                next = new AsyncMessageHandlerFilterRunner<T>(f, next).GetDelegate();
+                foreach (var f in filters.OrderByDescending(x => x.Order))
+                {
+                    next = new AsyncMessageHandlerFilterRunner<T>(f, next).GetDelegate();
+                }
             }
 
             this.handler = next;

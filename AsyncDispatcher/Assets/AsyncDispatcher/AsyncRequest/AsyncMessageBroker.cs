@@ -44,19 +44,19 @@ namespace MessagePipe
     public class AsyncMessageBrokerCore<TMessage> : IDisposable, IHandlerHolderMarker
     {
         FreeList<IAsyncMessageHandler<TMessage>> handlers;
-        readonly MessagePipeDiagnosticsInfo diagnotics;
+        // readonly MessagePipeDiagnosticsInfo diagnotics;
         readonly AsyncPublishStrategy defaultAsyncPublishStrategy;
         readonly HandlingSubscribeDisposedPolicy handlingSubscribeDisposedPolicy;
         readonly object gate = new object();
         bool isDisposed;
 
         [Preserve]
-        public AsyncMessageBrokerCore(MessagePipeDiagnosticsInfo diagnotics, MessagePipeOptions options)
+        public AsyncMessageBrokerCore(/*MessagePipeDiagnosticsInfo diagnotics,*/ MessagePipeOptions options)
         {
             this.handlers = new FreeList<IAsyncMessageHandler<TMessage>>();
             this.defaultAsyncPublishStrategy = options.DefaultAsyncPublishStrategy;
             this.handlingSubscribeDisposedPolicy = options.HandlingSubscribeDisposedPolicy;
-            this.diagnotics = diagnotics;
+            // this.diagnotics = diagnotics;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -103,7 +103,7 @@ namespace MessagePipe
 
                 var subscriptionKey = handlers.Add(handler);
                 var subscription = new Subscription(this, subscriptionKey);
-                diagnotics.IncrementSubscribe(this, subscription);
+                // diagnotics.IncrementSubscribe(this, subscription);
                 return subscription;
             }
         }
@@ -116,7 +116,7 @@ namespace MessagePipe
                 if (!isDisposed && handlers.TryDispose(out var count))
                 {
                     isDisposed = true;
-                    diagnotics.RemoveTargetDiagnostics(this, count);
+                    // diagnotics.RemoveTargetDiagnostics(this, count);
                 }
             }
         }
@@ -141,7 +141,7 @@ namespace MessagePipe
                     lock (core.gate)
                     {
                         core.handlers.Remove(subscriptionKey, true);
-                        core.diagnotics.DecrementSubscribe(core, this);
+                        // core.diagnotics.DecrementSubscribe(core, this);
                     }
                 }
             }

@@ -18,7 +18,9 @@ namespace MessagePipe
         readonly IServiceProvider provider;
 
         [Preserve]
-        public FilterAttachedAsyncMessageHandlerFactory(MessagePipeOptions options, AttributeFilterProvider<AsyncMessageHandlerFilterAttribute> filterProvider, IServiceProvider provider)
+        public FilterAttachedAsyncMessageHandlerFactory(MessagePipeOptions options, 
+            AttributeFilterProvider<AsyncMessageHandlerFilterAttribute> filterProvider, 
+            IServiceProvider provider)
         {
             this.options = options;
             this.filterProvider = filterProvider;
